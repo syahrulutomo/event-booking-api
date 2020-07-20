@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
@@ -46,8 +47,17 @@ const userSchema = new mongoose.Schema({
   groups: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Group'
+  }],
+  notifications: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Notification'
   }]
 });
+
+userSchema.methods.generateAuthToken = function() {
+  const token = jwt.sign({ _id: this.id }, process.env.PRIVATE_KEY);
+  return token;
+}
 
 const User = mongoose.model('User', userSchema);
 
@@ -61,7 +71,8 @@ function validateUser(user) {
     isAdmin: Joi.boolean(),
     photos: Joi.array().items(Joi.string()),
     interest: Joi.array().items(Joi.objectId().required()),
-    groups: Joi.array().items(Joi.objectId().required())
+    groups: Joi.array().items(Joi.objectId().required()),
+    notifications: Joi.array().items(Joi.objectId().required())
   });
 
   return schema.validate(user);
