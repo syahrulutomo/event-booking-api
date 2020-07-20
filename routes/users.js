@@ -5,14 +5,22 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const users = await User.find();
+  const users = await User
+    .find()
+    .populate('interest', '-__v')
+    .populate('groups', '-__v -members -admin')
+    .select('-__v');
+
   if(!users) return res.status(404).send('Users not found');
   res.send(users);
   res.end();
 });
 
 router.get('/:id', async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const user = await User
+    .findById(req.params.id)
+    .select('-__v');
+  
   if(!user) return res.status(404).send('Users not found');
   res.send(user);
   res.end();
@@ -25,7 +33,7 @@ router.post('/', async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
   if(user) return res.status(400).send('User already registered.');
 
-  user = new User(_.pick(req.body, ['name', 'email', 'password', 'city', 'country', 'interest', 'isAdmin']));
+  user = new User(_.pick(req.body, ['name', 'email', 'password', 'city', 'country', 'interest', 'isAdmin','groups']));
   await user.save();
   
   res.send(_.pick(user, ['id','name', 'email']));
@@ -46,6 +54,7 @@ router.put('/:id', async (req, res) => {
     user.isAdmin = req.body.isAdmin;
     user.photos = req.body.photos;
     user.interest = req.body.interest;
+    user.groups = req.body.groups;
 
     await user.save();
     res.send(user);

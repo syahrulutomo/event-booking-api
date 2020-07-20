@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category'
   }],
+  groups: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Group'
+  }]
 });
 
 const User = mongoose.model('User', userSchema);
@@ -56,7 +60,8 @@ function validateUser(user) {
     country: Joi.string().min(3),
     isAdmin: Joi.boolean(),
     photos: Joi.array().items(Joi.string()),
-    interest: Joi.array().items(Joi.objectId().required())
+    interest: Joi.array().items(Joi.objectId().required()),
+    groups: Joi.array().items(Joi.objectId().required())
   });
 
   return schema.validate(user);
