@@ -16,10 +16,6 @@ if(process.env.NODE_ENV === 'development') {
   app.use(morgan('tiny'));
 }
 
-mongoose.connect('mongodb://localhost/event-booking', {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
-  .then(() => console.log('Connected to database'))
-  .catch(err => console.log(err.message));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
@@ -31,6 +27,10 @@ app.use('/api/groups', groups);
 app.use('/api/events', events);
 app.use('/api/comments', comments);
 app.use('/api/notifications', notifications);
+
+mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
+  .then(() => console.log('Connected to database'))
+  .catch(err => console.log(err.message));
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
