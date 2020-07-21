@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const categories = await Category.find().sort({ name: 1 });
     res.send(categories);
@@ -46,7 +46,7 @@ router.put('/:id', async(req, res) => {
   }
 });
 
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const category = await Category.findByIdAndRemove({ _id: req.params.id });
     if(!category) return res.status(404).send('Category with given id was not found');

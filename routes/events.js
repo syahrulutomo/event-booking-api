@@ -4,7 +4,7 @@ const { Event, validateEvent } = require('../models/event');
 const express = require('express');
 const router = express.Router();
 
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
   const events = await Event
     .find()
     .populate('groupHost', '-__v')
@@ -19,7 +19,7 @@ router.get('/', auth, async (req, res) => {
   res.end();
 });
 
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', async (req, res) => {
   const events = await Event
     .findById(req.params.id)
     .populate('groupHost', '-__v')
@@ -34,7 +34,7 @@ router.get('/:id', auth, async (req, res) => {
   res.end();
 });
 
-router.post('/', auth, async (req, res) => {
+router.post('/', async (req, res) => {
   const { error } = validateEvent(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
@@ -60,7 +60,7 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', async (req, res) => {
   const { error } = validateEvent(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
@@ -83,7 +83,7 @@ router.put('/:id', auth, async (req, res) => {
   res.end();
 });
 
-router.delete('/', auth, async (req, res) => {
+router.delete('/', async (req, res) => {
   const event = await Event.findByIdAndRemove(req.params.id);
   if(!event) return res.status(404).send('Event with given id was not found');
 
