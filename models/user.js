@@ -70,9 +70,9 @@ function validateUser(user) {
     country: Joi.string().min(3),
     isAdmin: Joi.boolean(),
     photos: Joi.array().items(Joi.string()),
-    interest: Joi.array().items(Joi.objectId().required()),
-    groups: Joi.array().items(Joi.objectId().required()),
-    notifications: Joi.array().items(Joi.objectId().required())
+    interest: Joi.array().items(Joi.objectId()),
+    groups: Joi.array().items(Joi.objectId()),
+    notifications: Joi.array().items(Joi.objectId())
   });
 
   return schema.validate(user);
