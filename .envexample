@@ -1,0 +1,3 @@
+NODE_ENV=development
+PRIVATE_KEY=
+MONGODB_URI=
