@@ -8,8 +8,8 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   const groups = await Group
     .find()
-    .populate('admin', '-photos -__v -interest -password -joined_at')
-    .populate('members', '-photos -__v -interest -password -joined_at')
+    .populate('admin', '-photos -__v -interest -password -groups -notifications -joined_at')
+    .populate('members', '-photos -__v -interest -password -groups -notifications -joined_at')
     .select('-__v');
 
   if(!groups) return res.status(404).send('Groups was not found');
@@ -19,8 +19,8 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  const group = Group.findById(req.params.id);
-  if(!groups) return res.status(404).send('Group was not found');
+  const group = await Group.findById(req.params.id);
+  if(!group) return res.status(404).send('Group was not found');
 
   res.send(group);
   res.end();

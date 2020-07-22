@@ -42,8 +42,8 @@ function validateGroup(group) {
     admin: Joi.array().items(Joi.objectId().required()),
     city: Joi.string().min(3).max(255).required(),
     country: Joi.string().min(3).max(255).required(),
-    photos: Joi.array(),
-    members: Joi.array().items(Joi.objectId().required()),
+    photos: Joi.array().items(Joi.string()),
+    members: Joi.array().items(Joi.objectId()),
   });
 
   return schema.validate(group);
