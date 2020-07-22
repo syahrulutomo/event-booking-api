@@ -1,79 +1,14 @@
-const auth = require('../middleware/auth');
-const { Group, validateGroup } = require('../models/group');
-const _ = require('lodash');
-const mongoose = require('mongoose');
+const c = require('../controllers');
 const express = require('express');
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-  const groups = await Group
-    .find()
-    .populate('admin', '-photos -__v -interest -password -groups -notifications -joined_at')
-    .populate('members', '-photos -__v -interest -password -groups -notifications -joined_at')
-    .select('-__v');
+router.get('/', c.group.getGroupList);
+router.get('/:id', c.group.getGroup);
 
-  if(!groups) return res.status(404).send('Groups was not found');
+router.post('/', c.group.createGroup);
 
-  res.send(groups);
-  res.end();
-});
+router.put('/:id', c.group.updateGroup);
 
-router.get('/:id', async (req, res) => {
-  const group = await Group.findById(req.params.id);
-  if(!group) return res.status(404).send('Group was not found');
-
-  res.send(group);
-  res.end();
-});
-
-router.post('/', async (req, res) => {
-  const { error } = validateGroup(req.body);
-  if(error) return res.status(400).send(error.details[0].message);
-  
-  let group = new Group({
-    name: req.body.name,
-    city: req.body.city,
-    country: req.body.country,
-    admin: req.body.admin,
-    photos: req.body.photos,
-    members: req.body.members
-  });
-  
-  try {
-    await group.save();
-  } 
-  catch(err) {
-    return res.status(400).send('Bad request');
-  }
-  res.send(group);
-  res.end();
-});
-
-router.put('/:id', async (req, res) => {
-  const { error } = validateGroup(req.body);
-  if(error) return res.status(400).send(error.details[0].message);
-
-  const group = await Group.findByIdAndUpdate(
-    req.params.id, {
-      name: req.body.name,
-      admin: req.body.admin,
-      city: req.body.city,
-      country: req.body.country,
-      photos: req.body.photos,
-      members: req.body.members
-    }, {new: true});
-  if(!group) return res.status(404).send('Group was not found');
-
-  res.send(group);
-  res.end(); 
-});
-
-router.delete('/:id', async (req, res) => {
-  const group = await Group.findByIdAndRemove(req.params.id);
-  if(!group) return res.status(404).send('Group was not found');
-
-  res.send(group);
-  res.end(); 
-})
+router.delete('/:id', c.group.deleteGroup)
 
 module.exports = router;
