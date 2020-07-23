@@ -10,8 +10,7 @@ const categorySchema = new mongoose.Schema({
   photo: {
     type: String,
     minlength: 4,
-    maxlength: 255,
-    required: true
+    maxlength: 255
   },
   events: [{
     type: mongoose.Schema.Types.ObjectId,

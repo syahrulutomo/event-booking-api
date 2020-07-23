@@ -17,15 +17,8 @@ const eventSchema = new mongoose.Schema({
     required: true,
   },
   city: {
-    type: String,
-    minlength: 3,
-    maxlength: 255,
-    required: true
-  },
-  country: {
-    type: String,
-    minlength: 3,
-    maxlength: 255,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Ctiy',
     required: true
   },
   groupHost: {

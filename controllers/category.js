@@ -4,7 +4,10 @@ const validate = require('../validators');
 module.exports = {
   async getCategoryList (req, res, next) {
     try {
-      const categories = await Category.find().sort({ name: 1 });
+      const categories = await Category
+        .find()
+        .populate('events')
+        .sort({ name: 1 });
       res.send(categories);
       res.end();
     } catch(err) {
@@ -13,7 +16,10 @@ module.exports = {
   },
   async getCategory (req, res, next) {
     try {
-      const category = await Category.findById(req.params.id).sort({ name: 1 });
+      const category = await Category
+        .findById(req.params.id)
+        .populate('events')
+        .sort({ name: 1 });
       res.send(category);
       res.end();
     } catch(err) {

@@ -1,10 +1,11 @@
-const c = require('../controllers')
+const c = require('../controllers');
 const auth = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
 
 router.get('/', c.event.getEventList);
-router.get('/:id', c.event.getEvent);
+router.get('/details/:id', c.event.getEvent);
+router.get('/maps/:origin', c.event.getNearestEvent);
 
 router.post('/', auth, c.event.createEvent);
 

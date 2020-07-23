@@ -8,6 +8,7 @@ const groups = require('./routes/groups');
 const events = require('./routes/events');
 const comments = require('./routes/comments');
 const notifications = require('./routes/notifications');
+const cities = require('./routes/cities');
 const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
@@ -27,6 +28,7 @@ app.use('/api/groups', groups);
 app.use('/api/events', events);
 app.use('/api/comments', comments);
 app.use('/api/notifications', notifications);
+app.use('/api/cities', cities);
 
 mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
   .then(() => console.log('Connected to database'))

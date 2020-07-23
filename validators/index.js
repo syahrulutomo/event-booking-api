@@ -5,5 +5,6 @@ module.exports = {
   user: require('./user'),
   group: require('./group'),
   event: require('./event'),
-  notification: require('./notification')
+  notification: require('./notification'),
+  city: require('./city')
 }
