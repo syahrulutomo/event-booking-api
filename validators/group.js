@@ -5,8 +5,7 @@ function validate(group) {
   const schema = Joi.object({
     name: Joi.string().min(5).max(255).required(),
     admin: Joi.array().items(Joi.objectId().required()),
-    city: Joi.string().min(3).max(255).required(),
-    country: Joi.string().min(3).max(255).required(),
+    city: Joi.objectId().required(),
     photos: Joi.array().items(Joi.string()),
     members: Joi.array().items(Joi.objectId()),
   });

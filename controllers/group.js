@@ -29,7 +29,6 @@ module.exports = {
     let group = new Group({
       name: req.body.name,
       city: req.body.city,
-      country: req.body.country,
       admin: req.body.admin,
       photos: req.body.photos,
       members: req.body.members
@@ -53,7 +52,6 @@ module.exports = {
         name: req.body.name,
         admin: req.body.admin,
         city: req.body.city,
-        country: req.body.country,
         photos: req.body.photos,
         members: req.body.members
       }, {new: true});
