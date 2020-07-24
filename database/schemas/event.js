@@ -18,7 +18,7 @@ const eventSchema = new mongoose.Schema({
   },
   city: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Ctiy',
+    ref: 'City',
     required: true
   },
   groupHost: {
