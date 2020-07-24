@@ -36,7 +36,6 @@ const eventSchema = new mongoose.Schema({
   details: {
     type: String,
     minlength: 50,
-    maxlength: 255,
     required: true
   },
   attendees: [{

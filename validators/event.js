@@ -11,7 +11,7 @@ function validateEvent(event) {
     host: Joi.objectId().required(),
     photos: Joi.array().items(Joi.string().required()),
     isOnline: Joi.boolean(),
-    details: Joi.string().min(50).max(255).required(),
+    details: Joi.string().min(50).required(),
     attendees: Joi.array().items(Joi.objectId()),
     category: Joi.objectId().required(),
     comments: Joi.array().items(Joi.objectId())
