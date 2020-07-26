@@ -25,14 +25,9 @@ const userSchema = new mongoose.Schema({
     default: Date.now()
   },
   city: {
-    type: String,
-    minlength: 3,
-    maxlength: 255,
-  },
-  country: {
-    type: String,
-    minlength: 3,
-    maxlength: 255,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'City',
+    required: true
   },
   isAdmin: Boolean,
   photos: {

@@ -12,9 +12,8 @@ const groupSchema = new mongoose.Schema({
     ref: 'User'
   }],
   city: {
-    type: String,
-    minlength: 3,
-    maxlength: 255,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Group',
     required: true
   },
   photos: {
