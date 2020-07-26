@@ -1,4 +1,5 @@
 require('dotenv').config();
+const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const auth = require('./routes/auth');
@@ -17,6 +18,7 @@ if(process.env.NODE_ENV === 'development') {
   app.use(morgan('tiny'));
 }
 
+app.use(cors({credentials: true, origin: true}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
