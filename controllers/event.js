@@ -117,15 +117,28 @@ module.exports = {
     const distances = await axios.get(distanceText ,{ mode: 'no-cors' });
     if(!distances.data) return res.status(400).send('Distance not found');
 
-    let filteredResult = distances.data.rows[0].elements.filter(d => d.distance.value < 225000);
+    let filteredResult = distances.data.rows[0].elements.filter(d => d.distance.value < 65000);
     filteredResult = filteredResult.map(d => {
       const index = distances.data.rows[0].elements.indexOf(d);
       return cities[index];
     })
     
-    const events = await Event.find({  });
     console.log(filteredResult);
-    res.send(events);
-    res.end();
+    if(filteredResult.length > 0) {
+      const mapped = filteredResult.map(f => { return {city: f._id} } );
+      
+      const events = await Event
+        .find()
+        .or(mapped)
+        .populate('groupHost', '-__v')
+        .populate('host', '-__v')
+        .populate('city', '-__v')
+        .populate('attendees', '-__v')
+        .populate('category', '-__v')
+        .populate('comments', '-__v')
+        .select('-__v');
+      res.send(events);
+      res.end();
+    }
   }
 }

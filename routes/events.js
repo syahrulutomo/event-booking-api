@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', c.event.getEventList);
 router.get('/details/:id', c.event.getEvent);
-router.get('/maps/:origin', c.event.getNearestEvent);
+router.get('/nearest/:origin', c.event.getNearestEvent);
 
 router.post('/', auth, c.event.createEvent);
 
