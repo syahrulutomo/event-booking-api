@@ -123,7 +123,6 @@ module.exports = {
       return cities[index];
     })
     
-    console.log(filteredResult);
     if(filteredResult.length > 0) {
       const mapped = filteredResult.map(f => { return {city: f._id} } );
       
@@ -140,5 +139,8 @@ module.exports = {
       res.send(events);
       res.end();
     }
+    
+    res.send([]);
+    res.end();
   }
 }
