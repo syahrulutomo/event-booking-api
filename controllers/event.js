@@ -102,8 +102,6 @@ module.exports = {
     res.end();
   },
   async getNearestEvent (req, res) {
-    const cityOrigin = await City.find({ name: req.params.origin });
-    
     const cities = await City.find();
     const citiesMapped = cities.map(c => { return {lat: c.lat, long: c.long} });
     let str = '';
@@ -115,17 +113,17 @@ module.exports = {
     const distanceText = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${req.params.origin}&destinations=${str}&mode=driving&language=en-EN&key=${process.env.DISTANCE_MATRIX_API_KEY}`; 
     
     const distances = await axios.get(distanceText ,{ mode: 'no-cors' });
-    if(!distances.data) return res.status(400).send('Distance not found');
-
-    let filteredResult = distances.data.rows[0].elements.filter(d => d.distance.value < 65000);
-    filteredResult = filteredResult.map(d => {
-      const index = distances.data.rows[0].elements.indexOf(d);
-      return cities[index];
-    })
+    if(!distances.data) return res.status(400).send('Events not found');
+    
+    let filteredResult = distances.data.rows[0].elements.filter(d => d.status === 'OK').filter(d => d.distance.value < 65000);
     
     if(filteredResult.length > 0) {
-      const mapped = filteredResult.map(f => { return {city: f._id} } );
+      const mappedFilteredResult = filteredResult.map(d => {
+        const index = distances.data.rows[0].elements.indexOf(d);
+        return cities[index];
+      })
       
+      const mapped = mappedFilteredResult.map(f => { return {city: f._id} } );
       const events = await Event
         .find()
         .or(mapped)
