@@ -18,10 +18,9 @@ if(process.env.NODE_ENV === 'development') {
   app.use(morgan('tiny'));
 }
 
-app.use(cors({credentials: true, origin: true}))
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(helmet());
 
 app.use('/api/auth', auth);
 app.use('/api/categories', categories);
