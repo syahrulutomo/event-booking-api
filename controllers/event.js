@@ -114,7 +114,7 @@ module.exports = {
     
     const distances = await axios.get(distanceText ,{ mode: 'no-cors' });
     if(!distances.data) return res.status(400).send('Events not found');
-    
+    console.log(distances.data);
     let filteredResult = distances.data.rows[0].elements.filter(d => d.status === 'OK').filter(d => d.distance.value < 65000);
     
     if(filteredResult.length > 0) {
