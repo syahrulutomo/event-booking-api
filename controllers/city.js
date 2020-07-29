@@ -29,7 +29,8 @@ module.exports = {
       country: req.body.country,
       countryAbbr: req.body.countryAbbr,
       lat: req.body.lat,
-      long: req.body.long
+      long: req.body.long,
+      location: req.body.location
     });
     
     try {
@@ -50,7 +51,8 @@ module.exports = {
         country: req.body.country,
         countryAbbr: req.body.countryAbbr,
         lat: req.body.lat,
-        long: req.body.long
+        long: req.body.long,
+        location: req.body.location
       }, { new: true });
       if(!city) return res.status(404).send('City with given id was not found');
     
@@ -74,5 +76,37 @@ module.exports = {
       next(err.message);
       return res.status(404).send('City with given id was not found');
     }
-  }
+  },
+  async searchCity (req, res, next) {
+    try {
+      const cities = await City
+        .find({name: new RegExp(req.params.name, 'i') });
+      if(!cities) res.send([]);
+
+      res.send(cities);
+      res.end()
+    } catch(err) {
+      next(err);
+    }
+  },
+  async findNearestCity (req, res, next) {    
+    try {
+      const cities = await City.find(
+      {
+        location:
+          { $near :
+             {
+               $geometry: { type: "Point",  coordinates: [ req.params.longitude, req.params.latitude ] },
+               $minDistance: 0,
+               $maxDistance: 65000
+             }
+          }
+        }
+      )
+      res.send(cities);
+      res.end();
+    } catch(err) {
+      next(err);
+    }
+  },
 }

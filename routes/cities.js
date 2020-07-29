@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get('/', c.city.getCityList);
 router.get('/:id', c.city.getCity);
+router.get('/find/:name', c.city.searchCity);
+router.get('/find/nearest/:latitude/:longitude', c.city.findNearestCity);
 
 router.post('/', auth, c.city.createCity);
 

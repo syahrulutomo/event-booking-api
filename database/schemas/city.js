@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const pointSchema = require('./point');
 
 const citySchema = new mongoose.Schema({
   name: {
@@ -29,7 +30,13 @@ const citySchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 10,
     required: true
+  },
+  location: {
+    type: pointSchema,
+    required: true
   }
 });
+
+citySchema.index({ location: "2dsphere" });
 
 module.exports = citySchema;

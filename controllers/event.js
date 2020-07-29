@@ -5,7 +5,6 @@ const Event = require('../database/models/event');
 const Category = require('../database/models/category');
 const City = require('../database/models/city');
 const validate = require('../validators');
-const Fawn = require('fawn'); 
 
 module.exports = {
   async getEventList (req, res) {
@@ -101,44 +100,99 @@ module.exports = {
     res.send(event);
     res.end();
   },
-  async getNearestEvent (req, res) {
-    const cities = await City.find();
-    const citiesMapped = cities.map(c => { return {lat: c.lat, long: c.long} });
-    let str = '';
+  async getNearestEvent (req, res, next) {
+    const cities = await City
+    .find({
+        location:
+          { 
+            $near :
+            {
+              $geometry: { type: "Point",  coordinates: [ req.params.longitude, req.params.latitude ] },
+              $minDistance: 0,
+              $maxDistance: 65000
+            }
+          }
+      });
 
-    for(let i = 0; i < citiesMapped.length; i++) {
-      str = str + citiesMapped[i].lat + ',' + citiesMapped[i].long + '|';
-    }
-    
-    const distanceText = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${req.params.origin}&destinations=${str}&mode=driving&language=en-EN&key=${process.env.DISTANCE_MATRIX_API_KEY}`; 
-    
-    const distances = await axios.get(distanceText ,{ mode: 'no-cors' });
-    if(!distances.data) return res.status(400).send('Events not found');
-    console.log(distances.data);
-    let filteredResult = distances.data.rows[0].elements.filter(d => d.status === 'OK').filter(d => d.distance.value < 65000);
-    
-    if(filteredResult.length > 0) {
-      const mappedFilteredResult = filteredResult.map(d => {
-        const index = distances.data.rows[0].elements.indexOf(d);
-        return cities[index];
-      })
-      
-      const mapped = mappedFilteredResult.map(f => { return {city: f._id} } );
+    if(cities.length === 0) {
       const events = await Event
-        .find()
-        .or(mapped)
-        .populate('groupHost', '-__v')
-        .populate('host', '-__v')
-        .populate('city', '-__v')
-        .populate('attendees', '-__v')
-        .populate('category', '-__v')
-        .populate('comments', '-__v')
-        .select('-__v');
+      .find()
+      .populate('groupHost', '-__v')
+      .populate('host', '-__v')
+      .populate('city', '-__v')
+      .populate('attendees', '-__v')
+      .populate('category', '-__v')
+      .populate('comments', '-__v')
+      .select('-__v');
+
       res.send(events);
       res.end();
+      return;
     }
+
+    const cityIds = cities.map(c => c._id );
     
-    res.send([]);
+    const events = await Event
+      .find({ city: { $in: cityIds }})
+      .populate('groupHost', '-__v')
+      .populate('host', '-__v')
+      .populate('city', '-__v')
+      .populate('attendees', '-__v')
+      .populate('category', '-__v')
+      .populate('comments', '-__v')
+      .select('-__v');
+
+    res.send(events);
+    res.end();
+  },
+  async searchEvent(req, res, next) {
+    const cities = await City
+    .find({
+        location:
+          { 
+            $near :
+            {
+              $geometry: { type: "Point",  coordinates: [ req.params.longitude, req.params.latitude ] },
+              $minDistance: 0,
+              $maxDistance: 65000
+            }
+          }
+      });
+      console.log(cities);
+    if(cities.length === 0) {
+      const events = await Event
+      .find()
+      .populate('groupHost', '-__v')
+      .populate('host', '-__v')
+      .populate('city', '-__v')
+      .populate('attendees', '-__v')
+      .populate('category', '-__v')
+      .populate('comments', '-__v')
+      .select('-__v');
+
+      res.send(events);
+      res.end();
+      return;
+    }
+
+    const cityIds = cities.map(c => c._id );
+    
+    const events = await Event
+      .find({
+        $or: [
+          { title: new RegExp(req.params.name, 'i') },
+          { city: { $in: cityIds }}
+        ]
+      })
+      .populate('groupHost', '-__v')
+      .populate('host', '-__v')
+      .populate('city', '-__v')
+      .populate('attendees', '-__v')
+      .populate('category', '-__v')
+      .populate('comments', '-__v')
+      .select('-__v');
+
+    res.send(events);
     res.end();
   }
 }
