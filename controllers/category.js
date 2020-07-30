@@ -1,4 +1,5 @@
 const Category = require('../database/models/category');
+const Event = require('../database/models/event');
 const validate = require('../validators');
 
 module.exports = {
@@ -6,10 +7,40 @@ module.exports = {
     try {
       const categories = await Category
         .find()
-        .populate('events')
-        .sort({ name: 1 });
-      res.send(categories);
-      res.end();
+        .sort({ name: 1 })
+        .populate({
+          path: 'events',			
+          populate: { 
+            path: 'groupHost',
+            model: 'Group' 
+          }
+        })
+        .populate({
+          path: 'events',			
+          populate: { 
+            path: 'host',
+            model: 'User' 
+          }
+        })
+        .populate({
+          path: 'events',			
+          populate: { 
+            path: 'city',
+            model: 'City' 
+          }
+        })
+        .populate({
+          path: 'events',			
+          populate: { 
+            path: 'attendees',
+            model: 'User' 
+          }
+        })
+        .exec(function(err, data){
+          if (err) return next(err);
+          res.send(data);
+          res.end();
+        });
     } catch(err) {
       return res.status(404).send('Categories not found');
     }
@@ -22,6 +53,15 @@ module.exports = {
         .sort({ name: 1 });
       res.send(category);
       res.end();
+    } catch(err) {
+      return res.status(404).send('Categories not found');
+    }
+  },
+  async getCategoryByName (req, res, next) {
+    try {
+      Category
+        .find({})
+        
     } catch(err) {
       return res.status(404).send('Categories not found');
     }

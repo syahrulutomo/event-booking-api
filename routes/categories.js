@@ -4,7 +4,8 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', c.category.getCategoryList);
-router.get('/:id', c.category.getCategory);
+router.get('/details/:id', c.category.getCategory);
+router.get('/find/:name', c.category.getCategoryByName);
 
 router.post('/', auth, c.category.createCategory);
 

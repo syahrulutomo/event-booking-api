@@ -13,7 +13,7 @@ const groupSchema = new mongoose.Schema({
   }],
   city: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Group',
+    ref: 'City',
     required: true
   },
   photos: {

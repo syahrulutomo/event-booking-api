@@ -6,9 +6,9 @@ module.exports = {
   async getGroupList (req, res) {
     const groups = await Group
       .find()
-      .populate('city', '-__v')
       .populate('admin', '-photos -__v -interest -password -groups -notifications -joined_at')
       .populate('members', '-photos -__v -interest -password -groups -notifications -joined_at')
+      .populate('city', '-__v')
       .select('-__v');
   
     if(!groups) return res.status(404).send('Groups was not found');
